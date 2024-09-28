@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign in || Sign up</title>
+    <!-- font awesome icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css"
+        integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="./assets/css/login.css">
+</head>
+
+<body>
+
+    <div class="container" id="container">
+        <div class="form-container sign-up-container">
+            <form id="registerForm">
+                <h1>¡Registrate!</h1>
+                <div class="social-container">
+                    <a href="#" class="social"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="social"><i class="fab fa-google-plus-g"></i></a>
+                    <a href="#" class="social"><i class="fab fa-linkedin-in"></i></a>
+                </div>
+                <span>o usa tu email para registrarte</span>
+                <div class="infield">
+                    <input type="text" placeholder="Nombre" id="regName" required />
+                </div>
+                <div class="infield">
+                    <input type="email" placeholder="Correo" id="regEmail" required />
+                </div>
+                <div class="infield">
+                    <input type="password" placeholder="Contraseña" id="regPassword" required />
+                </div>
+                <button type="submit">Registrarme</button>
+            </form>
+        </div>
+        <div class="form-container sign-in-container">
+            <form id="loginForm">
+                <h1>Iniciar sesión</h1>
+                <div class="social-container">
+                    <a href="#" class="social"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="social"><i class="fab fa-google-plus-g"></i></a>
+                    <a href="#" class="social"><i class="fab fa-linkedin-in"></i></a>
+                </div>
+                <span>o usa tu cuenta</span>
+                <div class="infield">
+                    <input type="email" placeholder="Correo" id="loginEmail" required />
+                </div>
+                <div class="infield">
+                    <input type="password" placeholder="Contraseña" id="loginPassword" required />
+                </div>
+                <div class="combobox">
+                    <div class="connect">
+                        <input type="checkbox" id="rememberMe">
+                        Mantenerme conectado
+                    </div>
+                </div>
+                <a href="#" class="forgot">¿Olvidaste tu contraseña?</a>
+                <button type="submit">Ingresar</button>
+            </form>
+        </div>
+        <div class="overlay-container" id="overlayCon">
+            <div class="overlay">
+                <div class="overlay-panel overlay-left">
+                    <h1>¡Bienvenido!</h1>
+                    <p>Ingresa y mantente conectado con nosotros</p>
+                    <button id="switchToSignIn">Ingresar</button>
+                </div>
+                <div class="overlay-panel overlay-right">
+                    <h1>Hola, amigo!</h1>
+                    <p>Ingresa tus datos personales y empieza el recorrido con nosotros</p>
+                    <button id="switchToSignUp">Registrarme</button>
+                </div>
+            </div>
+            <button id="overlayBtn"></button>
+        </div>
+    </div>
+
+    <script>
+        const container = document.getElementById('container');
+        const overlayCon = document.getElementById('overlayCon');
+        const overlayBtn = document.getElementById('overlayBtn');
+        const switchToSignIn = document.getElementById('switchToSignIn');
+        const switchToSignUp = document.getElementById('switchToSignUp');
+
+        // Función para alternar panel de registro/inicio
+        overlayBtn.addEventListener('click', () => {
+            container.classList.toggle('right-panel-active');
+        });
+
+        // Cambiar a panel de inicio de sesión
+        switchToSignIn.addEventListener('click', () => {
+            container.classList.remove('right-panel-active');
+        });
+
+        // Cambiar a panel de registro
+        switchToSignUp.addEventListener('click', () => {
+            container.classList.add('right-panel-active');
+        });
+
+        // Manejo de registro
+        registerForm.addEventListener('submit', function (e) {
+            e.preventDefault();
+            const name = document.getElementById('regName').value;
+            const email = document.getElementById('regEmail').value;
+            const password = document.getElementById('regPassword').value;
+
+            // Comprobación si el email ya está registrado
+            if (!localStorage.getItem(email)) {
+                const user = { name, email, password };
+                localStorage.setItem(email, JSON.stringify(user));
+                alert('Registro exitoso. Ahora puedes iniciar sesión.');
+                registerForm.reset();
+            } else {
+                alert('El correo ya está registrado.');
+            }
+        });
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const registerForm = document.getElementById('registerForm');
+            const loginForm = document.getElementById('loginForm');
+
+            // Manejo de registro
+            registerForm.addEventListener('submit', function (e) {
+                e.preventDefault();
+                const name = document.getElementById('regName').value;
+                const email = document.getElementById('regEmail').value;
+                const password = document.getElementById('regPassword').value;
+
+                // Comprobación si el email ya está registrado
+                if (!localStorage.getItem(email)) {
+                    const user = { name, email, password };
+                    localStorage.setItem(email, JSON.stringify(user));
+                    alert('Registro exitoso. Ahora puedes iniciar sesión.');
+                    registerForm.reset();
+                } else {
+                    alert('El correo ya está registrado.');
+                }
+            });
+
+            // Manejo de inicio de sesión
+            loginForm.addEventListener('submit', function (e) {
+                e.preventDefault();
+                const email = document.getElementById('loginEmail').value;
+                const password = document.getElementById('loginPassword').value;
+                const rememberMe = document.getElementById('rememberMe').checked;
+
+                const storedUser = JSON.parse(localStorage.getItem(email));
+                if (storedUser && storedUser.password === password) {
+                    alert('Inicio de sesión exitoso');
+
+                    // Guarda la información del usuario en el localStorage
+                    localStorage.setItem('currentUser', JSON.stringify(storedUser));
+
+                    // Solo guarda el 'rememberMe' si está marcado
+                    if (rememberMe) {
+                        localStorage.setItem('rememberMe', email);
+                    }
+
+                    loginForm.reset();
+                    window.location.href = 'main.html';
+                } else {
+                    alert('Correo o contraseña incorrectos.');
+                }
+            });
+
+            // Comprobación de sesión mantenida
+            window.onload = function () {
+                // Verifica si el usuario seleccionó "Mantenerme conectado"
+                const rememberedEmail = localStorage.getItem('rememberMe');
+                if (rememberedEmail) {
+                    const storedUser = JSON.parse(localStorage.getItem(rememberedEmail));
+                    if (storedUser) {
+                        // Autenticación automática para "Mantenerme conectado"
+                        alert(`Bienvenido de nuevo, ${storedUser.name}!`);
+                        localStorage.setItem('currentUser', JSON.stringify(storedUser));
+                        window.location.href = 'main.html';
+                    }
+                } else {
+                    // Si no está "Mantenerme conectado", revisa si hay información en currentUser
+                    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+                    if (currentUser) {
+                        document.getElementById('userName').textContent = currentUser.name.split(' ')[0];
+                        document.getElementById('userEmail').textContent = currentUser.email;
+                    }
+                }
+            };
+        });
+      
+    </script>
+
+</body>
+
+</html>
